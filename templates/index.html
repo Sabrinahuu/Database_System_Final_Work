@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coffee Log · 登录</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --espresso: #1a0a00;
+    --roast: #3d1c02;
+    --caramel: #c17f3a;
+    --cream: #f5ead8;
+    --foam: #faf5ec;
+    --steam: #e8dcc8;
+    --accent: #d4622a;
+    --text: #2c1a0e;
+    --muted: #8a6a50;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--espresso);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+  }
+
+  /* LEFT PANEL */
+  .left-panel {
+    width: 52%;
+    background: var(--roast);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .left-panel::before {
+    content: '';
+    position: absolute;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(193,127,58,0.15) 0%, transparent 70%);
+    top: -100px; left: -100px;
+  }
+
+  .left-panel::after {
+    content: '';
+    position: absolute;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(212,98,42,0.1) 0%, transparent 70%);
+    bottom: 80px; right: 60px;
+  }
+
+  .brand-icon {
+    font-size: 3.5rem;
+    margin-bottom: 1.5rem;
+    display: block;
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .brand-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.2rem;
+    color: var(--cream);
+    line-height: 1.15;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .brand-title em {
+    color: var(--caramel);
+    font-style: italic;
+  }
+
+  .brand-sub {
+    color: rgba(245,234,216,0.6);
+    font-size: 1rem;
+    font-weight: 300;
+    line-height: 1.6;
+    max-width: 320px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .features {
+    margin-top: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .feature-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: rgba(245,234,216,0.75);
+    font-size: 0.9rem;
+  }
+
+  .feature-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--caramel);
+    flex-shrink: 0;
+  }
+
+  /* RIGHT PANEL */
+  .right-panel {
+    flex: 1;
+    background: var(--foam);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem 4rem;
+  }
+
+  .form-box {
+    width: 100%;
+    max-width: 360px;
+    animation: fadeUp 0.5s ease forwards;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .form-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    color: var(--roast);
+    margin-bottom: 0.4rem;
+  }
+
+  .form-subtitle {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+  }
+
+  .form-group { margin-bottom: 1.1rem; }
+
+  label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.4rem;
+  }
+
+  input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1.5px solid var(--steam);
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    color: var(--text);
+    background: white;
+    transition: all 0.2s;
+    outline: none;
+  }
+
+  input:focus {
+    border-color: var(--caramel);
+    box-shadow: 0 0 0 3px rgba(193,127,58,0.12);
+  }
+
+  .btn-submit {
+    width: 100%;
+    padding: 0.85rem;
+    background: var(--roast);
+    color: var(--cream);
+    border: none;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 0.5rem;
+    letter-spacing: 0.03em;
+  }
+
+  .btn-submit:hover {
+    background: var(--espresso);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(26,10,0,0.25);
+  }
+
+  .divider {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin: 1.2rem 0;
+    position: relative;
+  }
+
+  .divider::before, .divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 40%;
+    height: 1px;
+    background: var(--steam);
+  }
+  .divider::before { left: 0; }
+  .divider::after { right: 0; }
+
+  .link-register {
+    display: block;
+    text-align: center;
+    color: var(--caramel);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0.7rem;
+    border: 1.5px solid rgba(193,127,58,0.35);
+    border-radius: 10px;
+    transition: all 0.2s;
+  }
+
+  .link-register:hover {
+    background: rgba(193,127,58,0.08);
+    border-color: var(--caramel);
+  }
+
+  .alert-error {
+    background: #fef2f0;
+    color: var(--accent);
+    border: 1px solid rgba(212,98,42,0.2);
+    padding: 0.7rem 1rem;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    margin-bottom: 1rem;
+  }
+</style>
+</head>
+<body>
+
+<div class="left-panel">
+  <span class="brand-icon">☕</span>
+  <h1 class="brand-title">每一杯<br>都值得<em>记录</em></h1>
+  <p class="brand-sub">追踪你的咖啡偏好，发现新的风味，记录每一次美妙的饮用体验。</p>
+  <div class="features">
+    <div class="feature-item"><span class="feature-dot"></span>个性化推荐，基于你的口味画像</div>
+    <div class="feature-item"><span class="feature-dot"></span>记录每日饮用与口感评分</div>
+    <div class="feature-item"><span class="feature-dot"></span>实时热饮榜单，发现热门咖啡</div>
+  </div>
+</div>
+
+<div class="right-panel">
+  <div class="form-box">
+    <h2 class="form-title">欢迎回来</h2>
+    <p class="form-subtitle">登录你的咖啡账户</p>
+
+    {% if error %}
+    <div class="alert-error">{{ error }}</div>
+    {% endif %}
+
+    <form method="post">
+      <div class="form-group">
+        <label>用户名</label>
+        <input name="username" type="text" placeholder="输入用户名" required>
+      </div>
+      <div class="form-group">
+        <label>密码</label>
+        <input name="password" type="password" placeholder="输入密码" required>
+      </div>
+      <button class="btn-submit" type="submit">登录</button>
+    </form>
+
+    <div class="divider">或者</div>
+    <a class="link-register" href="/register">创建新账户</a>
+  </div>
+</div>
+
+</body>
+</html>

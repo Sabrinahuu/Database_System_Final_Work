@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coffee Log · 注册</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --espresso: #1a0a00;
+    --roast: #3d1c02;
+    --caramel: #c17f3a;
+    --cream: #f5ead8;
+    --foam: #faf5ec;
+    --steam: #e8dcc8;
+    --accent: #d4622a;
+    --text: #2c1a0e;
+    --muted: #8a6a50;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--foam);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background-image: radial-gradient(ellipse at 70% 30%, rgba(193,127,58,0.08) 0%, transparent 60%);
+  }
+
+  .back-link {
+    position: fixed;
+    top: 1.5rem; left: 1.5rem;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: color 0.2s;
+  }
+  .back-link:hover { color: var(--roast); }
+
+  .form-box {
+    background: white;
+    border-radius: 20px;
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 8px 40px rgba(61,28,2,0.1);
+    border: 1px solid rgba(193,127,58,0.12);
+    animation: fadeUp 0.4s ease forwards;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .form-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .form-icon { font-size: 2rem; margin-bottom: 0.5rem; display: block; }
+
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.7rem;
+    color: var(--roast);
+    margin-bottom: 0.3rem;
+  }
+
+  .subtitle { color: var(--muted); font-size: 0.9rem; }
+
+  .form-group { margin-bottom: 1.1rem; }
+
+  label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.4rem;
+  }
+
+  input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1.5px solid var(--steam);
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    color: var(--text);
+    background: var(--foam);
+    transition: all 0.2s;
+    outline: none;
+  }
+
+  input[type="text"]:focus, input[type="password"]:focus {
+    border-color: var(--caramel);
+    box-shadow: 0 0 0 3px rgba(193,127,58,0.12);
+    background: white;
+  }
+
+  /* PREFERENCE CHECKBOXES */
+  .pref-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.7rem;
+    display: block;
+  }
+
+  .pref-hint {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-bottom: 0.8rem;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  .pref-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.6rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .pref-item input[type="checkbox"] { display: none; }
+
+  .pref-item label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.9rem 0.5rem;
+    border: 1.5px solid var(--steam);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--foam);
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 0.82rem;
+    color: var(--text);
+  }
+
+  .pref-item label .emoji { font-size: 1.4rem; }
+
+  .pref-item input:checked + label {
+    border-color: var(--caramel);
+    background: rgba(193,127,58,0.08);
+    color: var(--roast);
+    font-weight: 500;
+  }
+
+  .pref-item label:hover {
+    border-color: rgba(193,127,58,0.4);
+    background: rgba(193,127,58,0.04);
+  }
+
+  .btn-submit {
+    width: 100%;
+    padding: 0.85rem;
+    background: var(--roast);
+    color: var(--cream);
+    border: none;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.03em;
+  }
+
+  .btn-submit:hover {
+    background: var(--espresso);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(26,10,0,0.25);
+  }
+
+  .login-link {
+    text-align: center;
+    margin-top: 1.2rem;
+    font-size: 0.88rem;
+    color: var(--muted);
+  }
+
+  .login-link a { color: var(--caramel); text-decoration: none; font-weight: 500; }
+  .login-link a:hover { text-decoration: underline; }
+
+  .alert-error {
+    background: #fef2f0;
+    color: var(--accent);
+    border: 1px solid rgba(212,98,42,0.2);
+    padding: 0.7rem 1rem;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    margin-bottom: 1rem;
+  }
+
+  hr { border: none; border-top: 1px solid var(--steam); margin: 1.3rem 0; }
+</style>
+</head>
+<body>
+
+<a class="back-link" href="/login">← 返回登录</a>
+
+<div class="form-box">
+  <div class="form-header">
+    <span class="form-icon">☕</span>
+    <h2>创建账户</h2>
+    <p class="subtitle">开始你的咖啡记录之旅</p>
+  </div>
+
+  {% if error %}
+  <div class="alert-error">{{ error }}</div>
+  {% endif %}
+
+  <form method="post">
+    <div class="form-group">
+      <label>用户名</label>
+      <input type="text" name="username" placeholder="设置你的用户名" required>
+    </div>
+    <div class="form-group">
+      <label>密码</label>
+      <input type="password" name="password" placeholder="设置密码" required>
+    </div>
+
+    <hr>
+
+    <span class="pref-label">咖啡偏好</span>
+    <p class="pref-hint">请至少选择 3 种你喜欢的风味类型</p>
+
+    <div class="pref-grid">
+      <div class="pref-item">
+        <input type="checkbox" name="preferences" value="Espresso" id="p1">
+        <label for="p1"><span class="emoji">☕</span>Espresso</label>
+      </div>
+      <div class="pref-item">
+        <input type="checkbox" name="preferences" value="Light Roast" id="p2">
+        <label for="p2"><span class="emoji">🌤</span>Light Roast</label>
+      </div>
+      <div class="pref-item">
+        <input type="checkbox" name="preferences" value="Single Origin" id="p3">
+        <label for="p3"><span class="emoji">🌍</span>Single Origin</label>
+      </div>
+      <div class="pref-item">
+        <input type="checkbox" name="preferences" value="Dark Roast" id="p4">
+        <label for="p4"><span class="emoji">🌑</span>Dark Roast</label>
+      </div>
+      <div class="pref-item">
+        <input type="checkbox" name="preferences" value="Cold Brew" id="p5">
+        <label for="p5"><span class="emoji">🧊</span>Cold Brew</label>
+      </div>
+      <div class="pref-item">
+        <input type="checkbox" name="preferences" value="Pour Over" id="p6">
+        <label for="p6"><span class="emoji">🫖</span>Pour Over</label>
+      </div>
+    </div>
+
+    <button class="btn-submit" type="submit">注册账户</button>
+  </form>
+
+  <p class="login-link">已有账户？<a href="/login">立即登录</a></p>
+</div>
+
+</body>
+</html>

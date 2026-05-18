@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coffee Log · 记录饮用</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --espresso: #1a0a00;
+    --roast: #3d1c02;
+    --caramel: #c17f3a;
+    --cream: #f5ead8;
+    --foam: #faf5ec;
+    --steam: #e8dcc8;
+    --accent: #d4622a;
+    --text: #2c1a0e;
+    --muted: #8a6a50;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--foam);
+    color: var(--text);
+    min-height: 100vh;
+    background-image: radial-gradient(ellipse at 80% 20%, rgba(193,127,58,0.08) 0%, transparent 50%);
+  }
+  nav {
+    background: var(--espresso);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+  }
+  .nav-brand { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--caramel); text-decoration: none; }
+  .nav-links { display: flex; gap: 0.4rem; align-items: center; }
+  .nav-links a { color: var(--steam); text-decoration: none; font-size: 0.85rem; font-weight: 500; padding: 0.4rem 0.9rem; border-radius: 20px; transition: all 0.2s; }
+  .nav-links a:hover { background: rgba(193,127,58,0.2); color: var(--caramel); }
+  .nav-links .danger { color: #e07060; }
+  .nav-links .danger:hover { background: rgba(224,112,96,0.15); }
+
+  .container { max-width: 560px; margin: 0 auto; padding: 2.5rem 1.5rem; }
+
+  .page-header { margin-bottom: 1.8rem; animation: fadeUp 0.3s ease forwards; }
+  .page-header h1 { font-family: 'Playfair Display', serif; font-size: 1.9rem; color: var(--roast); margin-bottom: 0.3rem; }
+  .page-header p { color: var(--muted); font-size: 0.9rem; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card {
+    background: white;
+    border-radius: 18px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(61,28,2,0.08);
+    border: 1px solid rgba(193,127,58,0.1);
+    animation: fadeUp 0.4s ease 0.1s both;
+  }
+
+  .form-group { margin-bottom: 1.3rem; }
+
+  label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.45rem;
+  }
+
+  select, input[type="number"] {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1.5px solid var(--steam);
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    color: var(--text);
+    background: var(--foam);
+    transition: all 0.2s;
+    outline: none;
+    appearance: none;
+  }
+
+  select:focus, input[type="number"]:focus {
+    border-color: var(--caramel);
+    box-shadow: 0 0 0 3px rgba(193,127,58,0.12);
+    background: white;
+  }
+
+  /* SCORE SLIDER */
+  .score-display {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .score-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    color: var(--roast);
+    min-width: 2.5rem;
+    text-align: center;
+    line-height: 1;
+  }
+
+  .score-label { font-size: 0.85rem; color: var(--muted); }
+
+  input[type="range"] {
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--steam);
+    outline: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    -webkit-appearance: none;
+    box-shadow: none;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--caramel);
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(193,127,58,0.35);
+    transition: transform 0.15s;
+  }
+
+  input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.15); }
+
+  .score-emojis {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 0.4rem;
+    padding: 0 2px;
+  }
+
+  /* QUANTITY STEPPER */
+  .stepper {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    border: 1.5px solid var(--steam);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--foam);
+    width: fit-content;
+  }
+
+  .stepper button {
+    width: 42px; height: 42px;
+    border: none;
+    background: transparent;
+    font-size: 1.2rem;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .stepper button:hover { background: rgba(193,127,58,0.1); color: var(--caramel); }
+
+  .stepper input[type="number"] {
+    width: 60px;
+    text-align: center;
+    border: none;
+    border-left: 1px solid var(--steam);
+    border-right: 1px solid var(--steam);
+    border-radius: 0;
+    background: white;
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 0.5rem;
+    box-shadow: none;
+  }
+
+  .stepper input:focus { box-shadow: none; }
+
+  hr { border: none; border-top: 1px solid var(--foam); margin: 1.2rem 0; }
+
+  .btn-submit {
+    width: 100%;
+    padding: 0.9rem;
+    background: var(--roast);
+    color: var(--cream);
+    border: none;
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.03em;
+  }
+
+  .btn-submit:hover {
+    background: var(--espresso);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(26,10,0,0.25);
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    margin-top: 1rem;
+    transition: color 0.2s;
+  }
+  .back-link:hover { color: var(--roast); }
+
+  .alert-error {
+    background: #fef2f0;
+    color: var(--accent);
+    border: 1px solid rgba(212,98,42,0.2);
+    padding: 0.7rem 1rem;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    margin-bottom: 1rem;
+  }
+
+  .option-group {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.option-item {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.5rem 1rem;
+  border: 1.5px solid var(--steam);
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.88rem;
+  color: var(--text);
+  transition: all 0.2s;
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 400;
+  background: var(--foam);
+}
+
+.option-item:has(input:checked) {
+  border-color: var(--caramel);
+  background: rgba(193,127,58,0.08);
+  color: var(--roast);
+  font-weight: 500;
+}
+
+.option-item input[type="radio"] {
+  display: none;
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="/dashboard">☕ Coffee Log</a>
+  <div class="nav-links">
+    <a href="/dashboard">主页</a>
+    <a href="/drink">记录饮用</a>
+    <a href="/ranking">咖啡榜单</a>
+    <a href="/logout" class="danger">退出</a>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="page-header">
+    <h1>记录今日咖啡</h1>
+    <p>喝了什么？感觉如何？</p>
+  </div>
+
+  <div class="card">
+    {% if error %}
+    <div class="alert-error">{{ error }}</div>
+    {% endif %}
+
+    <form method="post">
+      <div class="form-group">
+  <label>选择店铺</label>
+  <select id="shopSelect" onchange="filterCoffee()">
+    <option value="">-- 请选择店铺 --</option>
+    <option>星巴克</option>
+    <option>瑞幸</option>
+    <option>Manner</option>
+    <option>Grid</option>
+    <option>M Stand</option>
+    <option>Peet's</option>
+    <option>Tims</option>
+  </select>
+</div>
+
+<div class="form-group">
+  <label>选择咖啡</label>
+  <select name="coffee_id" id="coffeeSelect" required>
+    <option value="">-- 请先选择店铺 --</option>
+  </select>
+</div>
+
+<!-- 把所有咖啡数据存在隐藏的 JS 对象里 -->
+<script>
+const allCoffees = {
+  {% for shop, coffees in shops.items() %}
+  "{{ shop }}": [
+    {% for cid, cname in coffees %}
+    { id: {{ cid }}, name: "{{ cname }}" },
+    {% endfor %}
+  ],
+  {% endfor %}
+};
+
+function filterCoffee() {
+  const shop = document.getElementById('shopSelect').value;
+  const coffeeSelect = document.getElementById('coffeeSelect');
+
+  // 清空现有选项
+  coffeeSelect.innerHTML = '<option value="">-- 请选择咖啡 --</option>';
+
+  if (!shop || !allCoffees[shop]) return;
+
+  // 添加该店铺的咖啡
+  allCoffees[shop].forEach(item => {
+    const opt = document.createElement('option');
+    opt.value = item.id;
+    opt.textContent = item.name;
+    coffeeSelect.appendChild(opt);
+  });
+
+  // 默认选中第一个
+  if (coffeeSelect.options.length > 1) {
+    coffeeSelect.selectedIndex = 1;
+  }
+}
+</script>
+
+      <div class="form-group">
+        <label>饮用数量（杯）</label>
+        <div class="stepper">
+          <button type="button" onclick="changeQty(-1)">−</button>
+          <input type="number" name="quantity" id="qty" value="1" min="1" max="10">
+          <button type="button" onclick="changeQty(1)">+</button>
+        </div>
+      </div>
+      
+      <div class="form-group">
+  <label>杯型</label>
+  <div class="option-group">
+    <label class="option-item">
+      <input type="radio" name="cup_size" value="中杯"> 中杯
+    </label>
+    <label class="option-item">
+      <input type="radio" name="cup_size" value="大杯" checked> 大杯
+    </label>
+    <label class="option-item">
+      <input type="radio" name="cup_size" value="超大杯"> 超大杯
+    </label>
+  </div>
+</div>
+
+<div class="form-group">
+  <label>温度</label>
+  <div class="option-group">
+    <label class="option-item">
+      <input type="radio" name="temperature" value="去冰"> 去冰
+    </label>
+    <label class="option-item">
+      <input type="radio" name="temperature" value="少冰"> 少冰
+    </label>
+    <label class="option-item">
+      <input type="radio" name="temperature" value="正常冰" checked> 正常冰
+    </label>
+    <label class="option-item">
+      <input type="radio" name="temperature" value="热"> 热
+    </label>
+  </div>
+</div>
+
+<div class="form-group">
+  <label>咖啡因含量（mg，选填）</label>
+  <input type="number" name="caffeine" placeholder="例如：150" min="0" max="1000">
+</div>
+
+<div class="form-group">
+  <label>价格（元，选填）</label>
+  <input type="number" name="price" placeholder="例如：32.00" min="0" step="0.5">
+</div> 
+      <hr>
+
+      <div class="form-group">
+        <label>口感评分</label>
+        <div class="score-display">
+          <span class="score-value" id="scoreVal">5</span>
+          <span class="score-label">/ 10</span>
+        </div>
+        <input type="range" name="taste_score" id="scoreRange" min="1" max="10" value="5"
+               oninput="document.getElementById('scoreVal').textContent=this.value">
+        <div class="score-emojis">
+          <span>😐 一般</span>
+          <span>😊 不错</span>
+          <span>🤩 完美</span>
+        </div>
+      </div>
+
+      <hr>
+      <button class="btn-submit" type="submit">☕ 提交记录</button>
+    </form>
+  </div>
+
+  <a class="back-link" href="/dashboard">← 返回主页</a>
+</div>
+
+<script>
+function changeQty(delta) {
+  const input = document.getElementById('qty');
+  const val = parseInt(input.value) + delta;
+  if (val >= 1 && val <= 10) input.value = val;
+}
+</script>
+</body>
+</html>

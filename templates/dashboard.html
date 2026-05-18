@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coffee Log · 主页</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --espresso: #1a0a00;
+    --roast: #3d1c02;
+    --caramel: #c17f3a;
+    --cream: #f5ead8;
+    --foam: #faf5ec;
+    --steam: #e8dcc8;
+    --accent: #d4622a;
+    --text: #2c1a0e;
+    --muted: #8a6a50;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--foam);
+    color: var(--text);
+    min-height: 100vh;
+    background-image: radial-gradient(ellipse at 20% 50%, rgba(193,127,58,0.07) 0%, transparent 60%);
+  }
+
+  nav {
+    background: var(--espresso);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+  }
+  .nav-brand {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    color: var(--caramel);
+    text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 0.4rem; align-items: center; }
+  .nav-links a {
+    color: var(--steam);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 0.4rem 0.9rem;
+    border-radius: 20px;
+    transition: all 0.2s;
+  }
+  .nav-links a:hover { background: rgba(193,127,58,0.2); color: var(--caramel); }
+  .nav-links .danger { color: #e07060; }
+  .nav-links .danger:hover { background: rgba(224,112,96,0.15); }
+
+  .container { max-width: 980px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+  /* HERO */
+  .hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    animation: fadeUp 0.4s ease forwards;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-text h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: var(--roast);
+    margin-bottom: 0.3rem;
+  }
+
+  .hero-text p { color: var(--muted); font-size: 0.95rem; }
+
+  .hero-actions { display: flex; gap: 0.75rem; }
+
+  .btn {
+    display: inline-block;
+    padding: 0.65rem 1.4rem;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  .btn-primary { background: var(--roast); color: var(--cream); }
+  .btn-primary:hover { background: var(--espresso); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(61,28,2,0.25); }
+  .btn-outline { background: transparent; color: var(--caramel); border: 1.5px solid rgba(193,127,58,0.4); }
+  .btn-outline:hover { background: rgba(193,127,58,0.08); }
+  .btn-danger { background: transparent; color: #c0555a; border: 1.5px solid rgba(192,85,90,0.3); font-size: 0.82rem; }
+  .btn-danger:hover { background: rgba(192,85,90,0.08); }
+
+  /* GRID */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-bottom: 1.5rem; }
+
+  /* CARD */
+  .card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 16px rgba(61,28,2,0.07);
+    border: 1px solid rgba(193,127,58,0.1);
+    animation: fadeUp 0.4s ease forwards;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.1rem;
+  }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--roast);
+  }
+
+  .card-icon { font-size: 1.3rem; }
+
+  /* RECOMMEND ITEMS */
+  .rec-item {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid var(--foam);
+    transition: background 0.15s;
+  }
+
+  .rec-item:last-child { border-bottom: none; }
+
+  .rec-num {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: var(--foam);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+
+  .rec-info { flex: 1; }
+  .rec-name { font-weight: 500; font-size: 0.92rem; color: var(--text); }
+  .rec-type { font-size: 0.78rem; color: var(--muted); margin-top: 0.1rem; }
+
+  .rec-pop {
+    font-size: 0.78rem;
+    color: var(--caramel);
+    background: rgba(193,127,58,0.1);
+    padding: 0.2rem 0.5rem;
+    border-radius: 20px;
+    font-weight: 500;
+  }
+
+  /* HISTORY TABLE */
+  .history-table { width: 100%; border-collapse: collapse; }
+  .history-table th {
+    text-align: left;
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0 0 0.6rem 0;
+    border-bottom: 1px solid var(--steam);
+  }
+  .history-table td {
+    padding: 0.65rem 0;
+    font-size: 0.88rem;
+    border-bottom: 1px solid var(--foam);
+    color: var(--text);
+  }
+  .history-table tr:last-child td { border-bottom: none; }
+
+  .score-badge {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 500;
+  }
+  .score-high { background: rgba(82,160,100,0.12); color: #3a8a50; }
+  .score-mid { background: rgba(193,127,58,0.12); color: var(--caramel); }
+  .score-low { background: rgba(212,98,42,0.1); color: var(--accent); }
+
+  .empty-state {
+    text-align: center;
+    padding: 2rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .empty-state .empty-icon { font-size: 2rem; margin-bottom: 0.5rem; display: block; }
+
+  /* DELETE SECTION */
+  .danger-zone {
+    background: white;
+    border-radius: 16px;
+    padding: 1.2rem 1.5rem;
+    border: 1px solid rgba(192,85,90,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 12px rgba(61,28,2,0.05);
+  }
+  .danger-zone-text h3 { font-size: 0.92rem; font-weight: 500; color: #c0555a; }
+  .danger-zone-text p { font-size: 0.8rem; color: var(--muted); margin-top: 0.15rem; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="/dashboard">☕ Coffee Log</a>
+  <div class="nav-links">
+    <a href="/dashboard">主页</a>
+    <a href="/drink">记录饮用</a>
+    <a href="/ranking">咖啡榜单</a>
+    <a href="/logout" class="danger">退出</a>
+  </div>
+</nav>
+
+<div class="container">
+
+  <div class="hero">
+    <div class="hero-text">
+      <h1>你好，{{ username }} ☕</h1>
+      <p>今天想喝点什么？</p>
+    </div>
+    <div class="hero-actions">
+      <a href="/drink" class="btn btn-primary">+ 记录饮用</a>
+      <a href="/ranking" class="btn btn-outline">查看榜单</a>
+    </div>
+  </div>
+
+  <div class="grid-2">
+
+    <!-- 推荐 -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">为你推荐</span>
+        <span class="card-icon">✨</span>
+      </div>
+      {% if recommendations %}
+        {% for r in recommendations %}
+        <div class="rec-item">
+          <span class="rec-num">{{ loop.index }}</span>
+          <div class="rec-info">
+            <div class="rec-name">{{ r[1] }}</div>
+            <div class="rec-type">{{ r[2] }}</div>
+          </div>
+          <span class="rec-pop">热度 {{ r[3] }}</span>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty-state">
+          <span class="empty-icon">🫙</span>
+          暂无推荐，先记录几杯咖啡吧
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- 历史记录 -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">最近饮用</span>
+        <span class="card-icon">📋</span>
+      </div>
+      {% if history %}
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th>咖啡</th>
+              <th>日期</th>
+              <th>杯数</th>
+              <th>评分</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for h in history %}
+            <tr>
+              <td>{{ h[0] }}</td>
+              <td>{{ h[1] }}</td>
+              <td>{{ h[2] }}</td>
+              <td>
+                {% set s = h[3] %}
+                <span class="score-badge {% if s >= 8 %}score-high{% elif s >= 5 %}score-mid{% else %}score-low{% endif %}">
+                  {{ s }}/10
+                </span>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <div class="empty-state">
+          <span class="empty-icon">☕</span>
+          还没有饮用记录，<a href="/drink" style="color:var(--caramel)">去记录第一杯</a>
+        </div>
+      {% endif %}
+    </div>
+
+  </div>
+
+  <!-- 危险操作 -->
+  <div class="danger-zone">
+    <div class="danger-zone-text">
+      <h3>删除账户</h3>
+      <p>将清除所有饮用记录并重算咖啡热度，此操作不可撤销</p>
+    </div>
+    <form method="post" action="/delete_account"
+          onsubmit="return confirm('确定要删除账户吗？所有数据将被清除。')">
+      <button type="submit" class="btn btn-danger">删除账户</button>
+    </form>
+  </div>
+
+</div>
+</body>
+</html>
