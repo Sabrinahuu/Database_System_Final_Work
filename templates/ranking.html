@@ -139,6 +139,12 @@
     color: var(--muted);
     margin-top: 0.1rem;
   }
+  .coffee-info .tags, .podium-tags {
+    font-size: 0.7rem;
+    color: var(--muted);
+    margin-top: 0.35rem;
+    line-height: 1.35;
+  }
 
   .stat { font-size: 0.88rem; color: var(--text); }
   .stat-score { font-weight: 600; color: var(--caramel); }
@@ -157,9 +163,10 @@
 <body>
 
 <nav>
-  <a class="nav-brand" href="/dashboard">☕ Coffee Log</a>
+  <a class="nav-brand" href="/recommendations">☕ Coffee Log</a>
   <div class="nav-links">
-    <a href="/dashboard">主页</a>
+    <a href="/recommendations">个性化推荐</a>
+<a href="/history">最近饮用</a>
     <a href="/drink">记录饮用</a>
     <a href="/ranking">咖啡榜单</a>
     <a href="/logout" class="danger">退出</a>
@@ -184,6 +191,7 @@
       <div class="podium-rank">第 2 名</div>
       <div class="podium-name">{{ rows[1][1] }} · {{ rows[1][0] }}</div>
       <div class="podium-type">{{ rows[1][2] }}</div>
+      {% if rows[1][6] is defined and rows[1][6] %}<div class="podium-tags">{{ rows[1][6] }}</div>{% endif %}
       <div class="podium-score">{{ rows[1][5] or '–' }}<span> 分</span></div>
     </div>
     <!-- 第1名 -->
@@ -192,6 +200,7 @@
       <div class="podium-rank">第 1 名</div>
       <div class="podium-name">{{ rows[0][1] }} · {{ rows[0][0] }}</div>
       <div class="podium-type">{{ rows[0][2] }}</div>
+      {% if rows[0][6] is defined and rows[0][6] %}<div class="podium-tags">{{ rows[0][6] }}</div>{% endif %}
       <div class="podium-score">{{ rows[0][5] or '–' }}<span> 分</span></div>
     </div>
     <!-- 第3名 -->
@@ -200,6 +209,7 @@
       <div class="podium-rank">第 3 名</div>
       <div class="podium-name">{{ rows[2][1] }} · {{ rows[2][0] }}</div>
       <div class="podium-type">{{ rows[2][2] }}</div>
+      {% if rows[2][6] is defined and rows[2][6] %}<div class="podium-tags">{{ rows[2][6] }}</div>{% endif %}
       <div class="podium-score">{{ rows[2][5] or '–' }}<span> 分</span></div>
     </div>
   </div>
@@ -221,6 +231,7 @@
       <div class="coffee-info">
       <div class="name">{{ r[1] }} · {{ r[0] }}</div>
       <div class="type"><span class="type-badge">{{ r[2] }}</span></div>
+        {% if r[6] is defined and r[6] %}<div class="tags">{{ r[6] }}</div>{% endif %}
     </div>
     <span class="stat">{{ r[3] }}</span>
     <span class="stat">{{ r[4] }} 杯</span>

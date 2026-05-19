@@ -74,7 +74,7 @@
     margin-bottom: 0.45rem;
   }
 
-  select, input[type="number"] {
+  select, input[type="number"], input[type="date"] {
     width: 100%;
     padding: 0.8rem 1rem;
     border: 1.5px solid var(--steam);
@@ -268,14 +268,76 @@
 .option-item input[type="radio"] {
   display: none;
 }
+  .coffee-tags-preview {
+    margin-top: 0.55rem;
+    font-size: 0.78rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .coffee-tags-preview span {
+    display: inline-block;
+    padding: 0.12rem 0.45rem;
+    border-radius: 999px;
+    background: rgba(193,127,58,0.1);
+    color: var(--caramel);
+    border: 1px solid rgba(193,127,58,0.18);
+    margin: 0.12rem 0.12rem 0 0;
+    font-size: 0.7rem;
+  }
+
+.date-picker-card {
+  height: 64px;
+  border: 1.5px solid var(--steam);
+  border-radius: 12px;
+  background: var(--foam);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.date-picker-card:hover {
+  border-color: var(--caramel);
+  background: white;
+  box-shadow: 0 0 0 3px rgba(193,127,58,0.08);
+}
+
+.date-main {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--roast);
+}
+
+.date-sub {
+  margin-top: 0.2rem;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.date-icon {
+  font-size: 1.25rem;
+}
+
+.hidden-date-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+
+
+
 </style>
 </head>
 <body>
 
 <nav>
-  <a class="nav-brand" href="/dashboard">☕ Coffee Log</a>
+  <a class="nav-brand" href="/recommendations">☕ Coffee Log</a>
   <div class="nav-links">
-    <a href="/dashboard">主页</a>
+    <a href="/recommendations">个性化推荐</a>
+<a href="/history">最近饮用</a>
     <a href="/drink">记录饮用</a>
     <a href="/ranking">咖啡榜单</a>
     <a href="/logout" class="danger">退出</a>
@@ -303,17 +365,41 @@
     <option>Manner</option>
     <option>Grid</option>
     <option>M Stand</option>
-    <option>Peet's</option>
+    <option>Peets</option>
     <option>Tims</option>
   </select>
 </div>
 
 <div class="form-group">
   <label>选择咖啡</label>
-  <select name="coffee_id" id="coffeeSelect" required>
+  <select name="coffee_id" id="coffeeSelect" required onchange="showCoffeeTags()">
     <option value="">-- 请先选择店铺 --</option>
   </select>
+  <div id="coffeeTagsPreview" class="coffee-tags-preview"></div>
 </div>
+
+<div class="form-group">
+  <label>饮用日期</label>
+
+  <div class="date-picker-card" id="datePickerCard">
+    <div>
+      <div class="date-main" id="dateMain">今天</div>
+      <div class="date-sub" id="dateSub">--月--日</div>
+    </div>
+    <div class="date-icon">📅</div>
+  </div>
+
+  <input
+    type="date"
+    id="drinkDate"
+    name="drink_date"
+    class="hidden-date-input"
+    required
+  >
+</div>
+
+
+
 
 <!-- 把所有咖啡数据存在隐藏的 JS 对象里 -->
 <script>
@@ -321,7 +407,7 @@ const allCoffees = {
   {% for shop, coffees in shops.items() %}
   "{{ shop }}": [
     {% for cid, cname in coffees %}
-    { id: {{ cid }}, name: "{{ cname }}" },
+    { id: {{ cid }}, name: "{{ cname }}"{% if coffee_tags is defined and coffee_tags[cid] is defined %}, tags: "{{ coffee_tags[cid] }}"{% endif %} },
     {% endfor %}
   ],
   {% endfor %}
@@ -348,6 +434,20 @@ function filterCoffee() {
   if (coffeeSelect.options.length > 1) {
     coffeeSelect.selectedIndex = 1;
   }
+  showCoffeeTags();
+}
+
+function showCoffeeTags() {
+  const shop = document.getElementById('shopSelect').value;
+  const coffeeId = document.getElementById('coffeeSelect').value;
+  const box = document.getElementById('coffeeTagsPreview');
+  box.innerHTML = '';
+
+  if (!shop || !coffeeId || !allCoffees[shop]) return;
+  const item = allCoffees[shop].find(c => String(c.id) === String(coffeeId));
+  if (!item || !item.tags) return;
+
+  box.innerHTML = '口味标签：' + item.tags.split(', ').map(tag => `<span>${tag}</span>`).join('');
 }
 </script>
 
@@ -433,6 +533,56 @@ function changeQty(delta) {
   const val = parseInt(input.value) + delta;
   if (val >= 1 && val <= 10) input.value = val;
 }
+
+const drinkDateInput = document.getElementById('drinkDate');
+const datePickerCard = document.getElementById('datePickerCard');
+const dateMain = document.getElementById('dateMain');
+const dateSub = document.getElementById('dateSub');
+
+function getLocalDateString(date = new Date()) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+}
+
+function formatDateText(dateStr) {
+  const date = new Date(dateStr + 'T00:00:00');
+  const currentDate = getLocalDateString(new Date());
+
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+
+  if (dateStr === currentDate) {
+    dateMain.textContent = '今天';
+  } else {
+    dateMain.textContent = `${month}月${day}日`;
+  }
+
+  dateSub.textContent = `${month}月${day}日`;
+}
+
+function initDrinkDate() {
+  const currentDate = getLocalDateString(new Date());
+
+  drinkDateInput.value = currentDate;
+  formatDateText(currentDate);
+}
+
+datePickerCard.addEventListener('click', function () {
+  if (drinkDateInput.showPicker) {
+    drinkDateInput.showPicker();
+  } else {
+    drinkDateInput.click();
+  }
+});
+
+drinkDateInput.addEventListener('change', function () {
+  formatDateText(this.value);
+});
+
+initDrinkDate();
 </script>
 </body>
 </html>

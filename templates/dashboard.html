@@ -160,6 +160,17 @@
   .rec-info { flex: 1; }
   .rec-name { font-weight: 500; font-size: 0.92rem; color: var(--text); }
   .rec-type { font-size: 0.78rem; color: var(--muted); margin-top: 0.1rem; }
+  .rec-tags { font-size: 0.72rem; color: var(--muted); margin-top: 0.28rem; line-height: 1.4; }
+  .tag-pill {
+    display: inline-block;
+    padding: 0.1rem 0.42rem;
+    border-radius: 999px;
+    background: rgba(193,127,58,0.1);
+    color: var(--caramel);
+    border: 1px solid rgba(193,127,58,0.18);
+    margin: 0.12rem 0.12rem 0 0;
+    font-size: 0.68rem;
+  }
 
   .rec-pop {
     font-size: 0.78rem;
@@ -229,7 +240,8 @@
 <nav>
   <a class="nav-brand" href="/dashboard">☕ Coffee Log</a>
   <div class="nav-links">
-    <a href="/dashboard">主页</a>
+    <a href="/recommendations">个性化推荐</a>
+    <a href="/history">最近饮用</a>
     <a href="/drink">记录饮用</a>
     <a href="/ranking">咖啡榜单</a>
     <a href="/logout" class="danger">退出</a>
@@ -262,16 +274,23 @@
         <div class="rec-item">
           <span class="rec-num">{{ loop.index }}</span>
           <div class="rec-info">
-            <div class="rec-name">{{ r[1] }}</div>
-            <div class="rec-type">{{ r[2] }}</div>
+            <div class="rec-name">{{ r[1] }} · {{ r[2] }}</div>
+            <div class="rec-type">{{ r[3] }}</div>
+            {% if r[4] %}
+            <div class="rec-tags">
+              {% for tag in r[4].split(', ') %}
+              <span class="tag-pill">{{ tag }}</span>
+              {% endfor %}
+            </div>
+            {% endif %}
           </div>
-          <span class="rec-pop">热度 {{ r[3] }}</span>
+          <span class="rec-pop">推荐 {{ r[5] }}</span>
         </div>
         {% endfor %}
       {% else %}
         <div class="empty-state">
           <span class="empty-icon">🫙</span>
-          暂无推荐，先记录几杯咖啡吧
+          暂无推荐，请先选择口味偏好或记录几杯咖啡吧
         </div>
       {% endif %}
     </div>
