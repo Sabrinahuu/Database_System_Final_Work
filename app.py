@@ -43,11 +43,11 @@ def load_shops_and_tags(cur):
 
     try:
         cur.execute("""
-            SELECT coffee_id, tags
+            SELECT coffee_id, flavor_tags
             FROM v_coffee_tags
         """)
-        for coffee_id, tags in cur.fetchall():
-            coffee_tags[coffee_id] = tags or ''
+        for coffee_id, flavor_tags in cur.fetchall():
+            coffee_tags[coffee_id] = flavor_tags or ''
     except Exception:
         coffee_tags = {}
 
@@ -63,7 +63,10 @@ def get_recommendations(cur, user_id):
             pass
 
         return rows
-    except Exception:
+
+    except Exception as e:
+        print("调用 sp_recommend_coffee 失败，使用备用推荐 SQL：", e)
+
         try:
             cur.execute("""
                 SELECT
@@ -71,37 +74,56 @@ def get_recommendations(cur, user_id):
                     c.name,
                     c.shop,
                     c.type,
-                    IFNULL(v.tags, '') AS tags,
-                    ROUND(COUNT(cft.tag_id) * 10 + COALESCE(c.popularity, 0), 2) AS recommend_score
+                    IFNULL(v.flavor_tags, '') AS tags,
+                    ROUND(
+                        COALESCE(SUM(up.weight * cft.weight), 0)
+                        + COALESCE(c.popularity, 0) * 0.05,
+                        2
+                    ) AS recommend_score
                 FROM UserPreference up
-                JOIN CoffeeFlavorTag cft ON up.tag_id = cft.tag_id
-                JOIN Coffee c ON cft.coffee_id = c.coffee_id
-                LEFT JOIN v_coffee_tags v ON c.coffee_id = v.coffee_id
+                JOIN CoffeeFlavorTag cft 
+                    ON up.tag_id = cft.tag_id
+                JOIN Coffee c 
+                    ON cft.coffee_id = c.coffee_id
+                LEFT JOIN v_coffee_tags v 
+                    ON c.coffee_id = v.coffee_id
                 WHERE up.user_id = %s
                   AND c.coffee_id NOT IN (
                       SELECT coffee_id
                       FROM DrinkRecord
                       WHERE user_id = %s
                   )
-                GROUP BY c.coffee_id, c.name, c.shop, c.type, v.tags, c.popularity
+                GROUP BY 
+                    c.coffee_id, 
+                    c.name, 
+                    c.shop, 
+                    c.type, 
+                    v.flavor_tags, 
+                    c.popularity
                 ORDER BY recommend_score DESC
                 LIMIT 5
             """, (user_id, user_id))
+
             return cur.fetchall()
-        except Exception:
+
+        except Exception as e:
+            print("备用推荐 SQL 失败，使用热门咖啡推荐：", e)
+
             cur.execute("""
                 SELECT
                     c.coffee_id,
                     c.name,
                     c.shop,
                     c.type,
-                    IFNULL(v.tags, '') AS tags,
+                    IFNULL(v.flavor_tags, '') AS tags,
                     COALESCE(c.popularity, 0) AS recommend_score
                 FROM Coffee c
-                LEFT JOIN v_coffee_tags v ON c.coffee_id = v.coffee_id
+                LEFT JOIN v_coffee_tags v 
+                    ON c.coffee_id = v.coffee_id
                 ORDER BY c.popularity DESC
                 LIMIT 5
             """)
+
             return cur.fetchall()
 
 
@@ -494,7 +516,7 @@ def ranking():
                         r.popularity,
                         r.drink_count,
                         r.avg_score,
-                        IFNULL(v.tags, '') AS tags
+                        IFNULL(v.flavor_tags, '') AS tags
                     FROM v_coffee_ranking r
                     LEFT JOIN Coffee c
                         ON r.name = c.name

@@ -87,9 +87,8 @@ CREATE TABLE DrinkRecord (
     cup_size VARCHAR(20) DEFAULT 'Large',
     temperature VARCHAR(20) DEFAULT 'Normal',
     caffeine INT DEFAULT NULL,
-    price DECIMAL(6,2) DEFAULT NULL,
-    --用户对一次饮用记录的评分--
-    taste_score INT CHECK (taste_score BETWEEN 1 AND 10),
+    price DECIMAL(6,2) DEFAULT NULL,        -- ← 移到 FOREIGN KEY 前面
+    taste_score INT CHECK (taste_score BETWEEN 1 AND 10),  -- 用户评分
     FOREIGN KEY (user_id) REFERENCES `User`(user_id) ON DELETE CASCADE,
     FOREIGN KEY (coffee_id) REFERENCES Coffee(coffee_id) ON DELETE CASCADE
 );
