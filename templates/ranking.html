@@ -195,9 +195,10 @@
   {% if rows %}
 
   <!-- TOP 3 -->
-  {% if rows|length >= 3 %}
+  {% if rows|length >= 1 %}
   <div class="podium">
     <!-- 第2名 -->
+    {% if rows|length >= 2 %}
     <div class="podium-item rank-2">
       <span class="podium-crown">🥈</span>
       <div class="podium-rank">第 2 名</div>
@@ -206,6 +207,7 @@
       {% if rows[1][6] is defined and rows[1][6] %}<div class="podium-tags">{{ rows[1][6] }}</div>{% endif %}
       <div class="podium-score">{{ rows[1][5] or '–' }}<span> 分</span></div>
     </div>
+    {% endif %}
     <!-- 第1名 -->
     <div class="podium-item rank-1">
       <span class="podium-crown">🥇</span>
@@ -216,6 +218,7 @@
       <div class="podium-score">{{ rows[0][5] or '–' }}<span> 分</span></div>
     </div>
     <!-- 第3名 -->
+    {% if rows|length >= 3 %}
     <div class="podium-item rank-3">
       <span class="podium-crown">🥉</span>
       <div class="podium-rank">第 3 名</div>
@@ -224,11 +227,12 @@
       {% if rows[2][6] is defined and rows[2][6] %}<div class="podium-tags">{{ rows[2][6] }}</div>{% endif %}
       <div class="podium-score">{{ rows[2][5] or '–' }}<span> 分</span></div>
     </div>
+    {% endif %}
   </div>
   {% endif %}
 
   <!-- REST -->
-  {% if rows|length > 3 %}
+  {% if rows|length > 1 %}
   <div class="list-card">
     <div class="list-header">
       <span>排名</span>

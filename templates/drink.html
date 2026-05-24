@@ -351,9 +351,7 @@
   </div>
 
   <div class="card">
-    {% if error %}
-    <div class="alert-error">{{ error }}</div>
-    {% endif %}
+    
 
     <form method="post">
       <div class="form-group">
@@ -551,16 +549,16 @@ function handleCoffeeChange() {
 
       <div class="form-group">
         <label>口感评分</label>
-        <div class="score-display">
-          <span class="score-value" id="scoreVal">5</span>
-          <span class="score-label">/ 10</span>
-        </div>
-        <input type="range" name="taste_score" id="scoreRange" min="1" max="10" value="5"
-               oninput="document.getElementById('scoreVal').textContent=this.value">
-        <div class="score-emojis">
-          <span>😐 一般</span>
-          <span>😊 不错</span>
-          <span>🤩 完美</span>
+        <div style="display:flex; align-items:center; gap:1rem;">
+          <input type="number" name="taste_score" id="scoreInput" value="5"
+                 placeholder="请输入评分"
+                 style="width:100px; padding:0.8rem 1rem; border:1.5px solid var(--steam);
+                        border-radius:10px; font-family:'DM Sans',sans-serif; font-size:1.2rem;
+                        font-weight:600; color:var(--roast); background:var(--foam);
+                        outline:none; text-align:center;"
+                 onfocus="this.style.borderColor='var(--caramel)'"
+                 onblur="this.style.borderColor='var(--steam)'">
+          <span style="color:var(--muted); font-size:0.9rem;">/ 10 &nbsp;（正常范围 1–10，可手动输入任意值测试触发器）</span>
         </div>
       </div>
 
@@ -629,6 +627,17 @@ drinkDateInput.addEventListener('change', function () {
 
 initDrinkDate();
 </script>
+{% if success %}
+<script>
+  alert("评分提交正确");
+</script>
+{% endif %}
+
+{% if error %}
+<script>
+  alert("{{ error }}");
+</script>
+{% endif %}
 
 </body>
 </html>

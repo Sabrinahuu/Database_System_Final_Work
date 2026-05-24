@@ -390,6 +390,13 @@ def drink():
                             (custom_coffee, custom_shop,'Custom', 0)
                         )
                         coffee_id = cur2.lastrowid
+                        conn.commit()
+                        # 自定义咖啡插入默认口味标签（咖啡感、低苦），供存储过程更新UserPreference
+                        cur2.execute("""
+                            INSERT IGNORE INTO CoffeeFlavorTag(coffee_id, tag_id, weight)
+                            VALUES (%s, 4, 0.5), (%s, 3, 0.5)
+                        """, (coffee_id, coffee_id))
+                        conn.commit()
             else:
                 coffee_id = int(request.form['coffee_id'])
             quantity = int(request.form['quantity'])
@@ -408,10 +415,12 @@ def drink():
             if price is not None:
                 price = float(price)
 
+            score_error = None
+
+            # 先用存储过程插入
             try:
                 with conn.cursor() as cur:
                     conn.begin()
-
                     cur.callproc(
                         'sp_add_drink_record',
                         (
@@ -426,21 +435,31 @@ def drink():
                             score
                         )
                     )
-
                     while cur.nextset():
                         pass
-
                     conn.commit()
 
-            except Exception:
+            except Exception as proc_err:
                 conn.rollback()
-
-                with conn.cursor() as cur:
-                    conn.begin()
-
-                    cur.execute("""
-                        INSERT INTO DrinkRecord(
-                            user_id,
+                # 降级：直接 INSERT，让触发器自行校验
+                try:
+                    with conn.cursor() as cur:
+                        conn.begin()
+                        cur.execute("""
+                            INSERT INTO DrinkRecord(
+                                user_id,
+                                coffee_id,
+                                drink_date,
+                                quantity,
+                                cup_size,
+                                temperature,
+                                caffeine,
+                                price,
+                                taste_score
+                            )
+                            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                        """, (
+                            session['user_id'],
                             coffee_id,
                             drink_date,
                             quantity,
@@ -448,28 +467,29 @@ def drink():
                             temperature,
                             caffeine,
                             price,
-                            taste_score
-                        )
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-                    """, (
-                        session['user_id'],
-                        coffee_id,
-                        drink_date,
-                        quantity,
-                        cup_size,
-                        temperature,
-                        caffeine,
-                        price,
-                        score
-                    ))
-                    cur.execute("""
-                        UPDATE Coffee
-                        SET popularity = COALESCE(popularity, 0) + %s
-                        WHERE coffee_id = %s
-""", (quantity, coffee_id))
-                    conn.commit()
+                            score
+                        ))
+                        cur.execute("""
+                            UPDATE Coffee
+                            SET popularity = COALESCE(popularity, 0) + %s
+                            WHERE coffee_id = %s
+                        """, (quantity, coffee_id))
+                        conn.commit()
 
-            return redirect('/dashboard')
+                except Exception as insert_err:
+                    conn.rollback()
+                    # 触发器或约束拦截，把错误信息传回前端
+                    score_error = f"数据库拒绝插入：{insert_err}"
+
+            if score_error:
+                return render_template(
+                    'drink.html',
+                    shops=shops,
+                    coffee_tags=coffee_tags,
+                    error=score_error
+                )
+
+            return render_template('drink.html', shops=shops, coffee_tags=coffee_tags, success=True)
 
     except Exception as e:
         return render_template(
@@ -498,9 +518,8 @@ def delete_account():
     conn = get_conn()
 
     try:
+        conn.autocommit(False)
         with conn.cursor() as cur:
-            conn.begin()
-
             cur.execute("""
                 DELETE FROM DrinkRecord
                 WHERE user_id = %s
@@ -512,11 +531,11 @@ def delete_account():
             """, (user_id,))
 
             cur.execute("""
-                DELETE FROM User
+                DELETE FROM `User`
                 WHERE user_id = %s
             """, (user_id,))
 
-            conn.commit()
+        conn.commit()
 
     except Exception:
         conn.rollback()
@@ -532,7 +551,7 @@ def delete_account():
 @app.route('/ranking')
 def ranking():
     conn = get_conn()
-
+   
     try:
         with conn.cursor() as cur:
             cur.execute("""

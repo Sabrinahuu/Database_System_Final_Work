@@ -226,6 +226,9 @@
     <a href="/drink">记录饮用</a>
     <a href="/ranking">咖啡榜单</a>
     <a href="/logout" class="danger">退出</a>
+    <form action="/delete_account" method="POST" style="display:inline;" onsubmit="return confirm('确定要注销账号吗？所有饮用记录和偏好数据将被永久删除，此操作不可恢复！')">
+      <button type="submit" style="background:none;border:1px solid #e07060;color:#e07060;font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:500;padding:0.4rem 0.9rem;border-radius:20px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(224,112,96,0.15)'" onmouseout="this.style.background='none'">注销账号</button>
+    </form>
   </div>
 </nav>
 

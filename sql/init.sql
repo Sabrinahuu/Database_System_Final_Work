@@ -435,8 +435,8 @@ SELECT
 FROM CoffeeFlavorTag cft
 WHERE cft.coffee_id = p_coffee_id
 ON DUPLICATE KEY UPDATE
-    weight = LEAST(5.00, GREATEST(0.00, weight + VALUES(weight))),
-    source = IF(source = 'register', 'register', 'history');
+    weight = LEAST(5.00, GREATEST(0.00, UserPreference.weight + VALUES(weight))),
+    source = IF(UserPreference.source = 'register', 'register', 'history');
 
     COMMIT;
 END;//
@@ -485,7 +485,7 @@ CREATE VIEW v_coffee_ranking AS
 SELECT
     c.coffee_id,
     c.name,
-    c.shop,
+    c.shop, 
     c.type,
     c.popularity,
     COUNT(dr.record_id) AS drink_count,
@@ -494,7 +494,7 @@ FROM Coffee c
 LEFT JOIN DrinkRecord dr ON c.coffee_id = dr.coffee_id
 GROUP BY c.coffee_id, c.name, c.shop, c.type, c.popularity
 ORDER BY avg_score DESC, drink_count DESC;
-
+ 
 -- ===================== 14. 视图：咖啡标签展示 =====================
 CREATE VIEW v_coffee_tags AS
 SELECT
