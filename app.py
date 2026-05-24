@@ -386,8 +386,8 @@ def drink():
                         coffee_id = row[0]
                     else:
                         cur2.execute(
-                            "INSERT INTO Coffee(name, shop) VALUES(%s, %s)",
-                            (custom_coffee, custom_shop)
+                            "INSERT INTO Coffee(name, shop,type, popularity) VALUES(%s, %s, %s, %s)",
+                            (custom_coffee, custom_shop,'Custom', 0)
                         )
                         coffee_id = cur2.lastrowid
             else:
@@ -462,7 +462,11 @@ def drink():
                         price,
                         score
                     ))
-
+                    cur.execute("""
+                        UPDATE Coffee
+                        SET popularity = COALESCE(popularity, 0) + %s
+                        WHERE coffee_id = %s
+""", (quantity, coffee_id))
                     conn.commit()
 
             return redirect('/dashboard')
@@ -531,36 +535,33 @@ def ranking():
 
     try:
         with conn.cursor() as cur:
-            try:
-                cur.execute("""
-                    SELECT
-                        r.name,
-                        r.shop,
-                        r.type,
-                        r.popularity,
-                        r.drink_count,
-                        r.avg_score,
-                        IFNULL(v.flavor_tags, '') AS tags
-                    FROM v_coffee_ranking r
-                    LEFT JOIN Coffee c
-                        ON r.name = c.name
-                       AND r.shop = c.shop
-                    LEFT JOIN v_coffee_tags v
-                        ON c.coffee_id = v.coffee_id
-                    LIMIT 10
-                """)
-            except Exception:
-                cur.execute("""
-                    SELECT
-                        name,
-                        shop,
-                        type,
-                        popularity,
-                        drink_count,
-                        avg_score
-                    FROM v_coffee_ranking
-                    LIMIT 10
-                """)
+            cur.execute("""
+                SELECT
+                    c.name,
+                    c.shop,
+                    COALESCE(c.type, 'Custom') AS type,
+                    COALESCE(c.popularity, 0) AS popularity,
+                    COALESCE(SUM(dr.quantity), 0) AS drink_count,
+                    ROUND(AVG(dr.taste_score), 1) AS avg_score,
+                    IFNULL(v.flavor_tags, '') AS tags
+                FROM Coffee c
+                JOIN DrinkRecord dr
+                    ON c.coffee_id = dr.coffee_id
+                LEFT JOIN v_coffee_tags v
+                    ON c.coffee_id = v.coffee_id
+                GROUP BY
+                    c.coffee_id,
+                    c.name,
+                    c.shop,
+                    c.type,
+                    c.popularity,
+                    v.flavor_tags
+                ORDER BY
+                    drink_count DESC,
+                    avg_score DESC,
+                    popularity DESC
+                LIMIT 10
+            """)
 
             rows = cur.fetchall()
 
