@@ -95,37 +95,76 @@ CREATE TABLE DrinkRecord (
 
 -- ===================== 7. 初始化咖啡数据 =====================
 INSERT INTO Coffee(name, shop, type, popularity) VALUES
+-- 星巴克
 ('美式咖啡', '星巴克', 'Espresso', 0),
 ('拿铁', '星巴克', 'Espresso', 0),
 ('馥芮白', '星巴克', 'Espresso', 0),
 ('冷萃咖啡', '星巴克', 'Cold Brew', 0),
-('燕麦拿铁', '星巴克', 'Light Roast', 0),
+('焦糖玛奇朵', '星巴克', 'Espresso', 0),
+('摩卡', '星巴克', 'Espresso', 0),
+('比利时黑巧拿铁', '星巴克', 'Espresso', 0),
+('巴旦木拿铁', '星巴克', 'Espresso', 0),
+
+-- 瑞幸
 ('生椰拿铁', '瑞幸', 'Espresso', 0),
 ('厚乳拿铁', '瑞幸', 'Espresso', 0),
 ('美式咖啡', '瑞幸', 'Espresso', 0),
 ('丝绒拿铁', '瑞幸', 'Espresso', 0),
 ('冰吸生椰', '瑞幸', 'Cold Brew', 0),
+('小黄油拿铁', '瑞幸', 'Espresso', 0),
+('精萃澳瑞白', '瑞幸', 'Espresso', 0),
+('柚C美式', '瑞幸', 'Espresso', 0),
+
+-- Manner
 ('手冲咖啡', 'Manner', 'Pour Over', 0),
 ('拿铁', 'Manner', 'Espresso', 0),
 ('美式', 'Manner', 'Espresso', 0),
 ('燕麦拿铁', 'Manner', 'Light Roast', 0),
 ('冷萃', 'Manner', 'Cold Brew', 0),
+('烤坚果拿铁', 'Manner', 'Espresso', 0),
+('咸芝士拿铁', 'Manner', 'Espresso', 0),
+('干姜美式', 'Manner', 'Espresso', 0),
+
+-- Grid
 ('单品手冲', 'Grid', 'Single Origin', 0),
 ('意式浓缩', 'Grid', 'Espresso', 0),
 ('拿铁', 'Grid', 'Espresso', 0),
 ('冷萃', 'Grid', 'Cold Brew', 0),
+('白脱拿铁', 'Grid', 'Espresso', 0),
+('咸奶萃', 'Grid', 'Cold Brew', 0),
+('冷萃维也纳', 'Grid', 'Cold Brew', 0),
+('罗马人美式', 'Grid', 'Espresso', 0),
+
+-- M Stand
 ('燕麦拿铁', 'M Stand', 'Light Roast', 0),
 ('美式', 'M Stand', 'Espresso', 0),
 ('手冲', 'M Stand', 'Pour Over', 0),
-('冷萃拿铁', 'M Stand', 'Cold Brew', 0),
-('招牌浓缩', 'Peets', 'Espresso', 0),
+('紫芋拿铁', 'M Stand', 'Espresso', 0),
+('山核桃拿铁', 'M Stand', 'Espresso', 0),
+('黑芝麻巴斯克拿铁', 'M Stand', 'Espresso', 0),
+('话梅气泡美式', 'M Stand', 'Espresso', 0),
+('冰摇黄杏美式', 'M Stand', 'Espresso', 0),
+
+-- Peets
+('Dirty', 'Peets', 'Espresso', 0),
 ('拿铁', 'Peets', 'Espresso', 0),
-('黑眼龙', 'Peets', 'Dark Roast', 0),
+('焦糖烧拿铁', 'Peets', 'Espresso', 0),
 ('冷萃', 'Peets', 'Cold Brew', 0),
-('招牌咖啡', 'Tims', 'Light Roast', 0),
+('芝士分子拿铁', 'Peets', 'Espresso', 0),
+('三重玫瑰奶砖拿铁', 'Peets', 'Espresso', 0),
+('卡布奇诺', 'Peets', 'Espresso', 0),
+('澳洲小白', 'Peets', 'Espresso', 0),
+
+-- Tims
+('燕麦拿铁', 'Tims', 'Light Roast', 0),
 ('拿铁', 'Tims', 'Espresso', 0),
 ('美式', 'Tims', 'Espresso', 0),
-('冷萃', 'Tims', 'Cold Brew', 0);
+('冷萃', 'Tims', 'Cold Brew', 0),
+('水牛乳拿铁', 'Tims', 'Espresso', 0),
+('山楂美式', 'Tims', 'Espresso', 0),
+('玫瑰芝士浮云拿铁', 'Tims', 'Espresso', 0),
+('澳白', 'Tims', 'Espresso', 0);
+
 
 -- ===================== 8. 初始化口味标签 =====================
 INSERT INTO FlavorTag(tag_name, tag_group, description) VALUES
@@ -134,7 +173,7 @@ INSERT INTO FlavorTag(tag_name, tag_group, description) VALUES
 ('低苦', '口感', '苦味较低，适合新手或轻口味用户'),
 ('咖啡感', '强度', '咖啡本身风味明显'),
 ('浓郁', '强度', '整体风味厚重'),
-('清爽', '口感', '口感轻盈，适合冰饮或冷萃'),
+('清爽', '口感', '口感轻盈，适合冰饮、冷萃或果味咖啡'),
 ('酸甜', '风味', '带有明亮酸甜感'),
 ('果香', '风味', '有水果类风味倾向'),
 ('花香', '风味', '有花香、茶感等细腻风味'),
@@ -146,329 +185,159 @@ INSERT INTO FlavorTag(tag_name, tag_group, description) VALUES
 ('冰饮', '温度', '适合冰饮或冷饮场景'),
 ('高咖啡因', '强度', '咖啡因含量相对较高'),
 ('手冲层次', '风味', '手冲或单品咖啡常见的层次感'),
-('轻盈', '口感', '整体口感轻，负担感较低');
+('轻盈', '口感', '整体口感轻，负担感较低'),
+('巧克力', '风味', '巧克力、可可、黑巧类风味'),
+('芝士', '风味', '芝士、奶盖、咸奶油类风味'),
+('黄油', '风味', '黄油、白脱、奶油类香气'),
+('玫瑰', '风味', '玫瑰花香或花果香风味'),
+('气泡感', '口感', '带有气泡水或清爽刺激口感'),
+('话梅', '风味', '话梅、咸酸甜类风味'),
+('姜味', '风味', '生姜、干姜等辛香风味'),
+('芝麻', '风味', '黑芝麻、坚果谷物类香气'),
+('芋香', '风味', '紫芋、芋泥、甜香类风味'),
+('杏香', '风味', '黄杏、杏果类风味'),
+('柑橘', '风味', '柚子、橙子、柑橘类酸甜风味');
+
 
 -- ===================== 9. 给咖啡饮品绑定口味标签 =====================
 -- 说明：
 -- weight 表示该标签对这款饮品的代表程度。
 -- 1.00 为普通匹配，1.20 / 1.30 为更强匹配。
 
--- 星巴克
 INSERT INTO CoffeeFlavorTag(coffee_id, tag_id, weight)
 SELECT c.coffee_id, t.tag_id,
     CASE
-        WHEN t.tag_name IN ('咖啡感', '浓郁') THEN 1.20
+        WHEN t.tag_name IN ('奶香', '顺滑', '咖啡感', '浓郁', '清爽', '冰饮', '手冲层次') THEN 1.20
+        WHEN t.tag_name IN ('椰香', '焦糖', '巧克力', '坚果', '芝士', '黄油', '玫瑰', '气泡感', '话梅', '姜味', '芝麻', '芋香', '杏香', '柑橘') THEN 1.30
         ELSE 1.00
     END
 FROM Coffee c
-JOIN FlavorTag t ON t.tag_name IN ('咖啡感', '浓郁', '高咖啡因')
-WHERE c.name = '美式咖啡' AND c.shop = '星巴克';
+JOIN FlavorTag t ON
+    (
+        -- 美式类
+        (
+            c.name IN ('美式咖啡', '美式', '罗马人美式')
+            AND t.tag_name IN ('咖啡感', '浓郁', '高咖啡因')
+        )
 
-INSERT INTO CoffeeFlavorTag(coffee_id, tag_id, weight)
-SELECT c.coffee_id, t.tag_id,
-    CASE
-        WHEN t.tag_name IN ('奶香', '顺滑') THEN 1.20
-        ELSE 1.00
-    END
-FROM Coffee c
-JOIN FlavorTag t ON t.tag_name IN ('奶香', '顺滑', '低苦', '咖啡感')
-WHERE c.name = '拿铁' AND c.shop = '星巴克';
+        -- 果味美式
+        OR (
+            c.name IN ('柚C美式')
+            AND t.tag_name IN ('咖啡感', '清爽', '酸甜', '果香', '柑橘', '冰饮')
+        )
+        OR (
+            c.name IN ('话梅气泡美式')
+            AND t.tag_name IN ('咖啡感', '清爽', '酸甜', '话梅', '气泡感', '冰饮')
+        )
+        OR (
+            c.name IN ('冰摇黄杏美式')
+            AND t.tag_name IN ('咖啡感', '清爽', '酸甜', '果香', '杏香', '冰饮')
+        )
+        OR (
+            c.name IN ('山楂美式')
+            AND t.tag_name IN ('咖啡感', '清爽', '酸甜', '果香')
+        )
+        OR (
+            c.name IN ('干姜美式')
+            AND t.tag_name IN ('咖啡感', '浓郁', '姜味', '高咖啡因')
+        )
 
-INSERT INTO CoffeeFlavorTag(coffee_id, tag_id, weight)
-SELECT c.coffee_id, t.tag_id,
-    CASE
-        WHEN t.tag_name IN ('奶香', '顺滑') THEN 1.30
-        ELSE 1.00
-    END
-FROM Coffee c
-JOIN FlavorTag t ON t.tag_name IN ('奶香', '顺滑', '浓郁', '低苦')
-WHERE c.name = '馥芮白' AND c.shop = '星巴克';
+        -- 基础拿铁类
+        OR (
+            c.name IN ('拿铁', '卡布奇诺', '澳白', '澳洲小白', '馥芮白', '精萃澳瑞白', 'Dirty')
+            AND t.tag_name IN ('奶香', '顺滑', '低苦', '咖啡感', '浓郁')
+        )
 
-INSERT INTO CoffeeFlavorTag(coffee_id, tag_id, weight)
-SELECT c.coffee_id, t.tag_id,
-    CASE
-        WHEN t.tag_name IN ('清爽', '冰饮') THEN 1.20
-        ELSE 1.00
-    END
-FROM Coffee c
-JOIN FlavorTag t ON t.tag_name IN ('清爽', '低苦', '冰饮', '咖啡感')
-WHERE c.name = '冷萃咖啡' AND c.shop = '星巴克';
+        -- 燕麦拿铁
+        OR (
+            c.name = '燕麦拿铁'
+            AND t.tag_name IN ('奶香', '谷物香', '顺滑', '轻盈', '低苦')
+        )
 
-INSERT INTO CoffeeFlavorTag(coffee_id, tag_id, weight)
-SELECT c.coffee_id, t.tag_id,
-    CASE
-        WHEN t.tag_name IN ('谷物香', '顺滑') THEN 1.20
-        ELSE 1.00
-    END
-FROM Coffee c
-JOIN FlavorTag t ON t.tag_name IN ('奶香', '谷物香', '顺滑', '轻盈', '低苦')
-WHERE c.name = '燕麦拿铁' AND c.shop = '星巴克';
+        -- 生椰类
+        OR (
+            c.name IN ('生椰拿铁', '冰吸生椰')
+            AND t.tag_name IN ('奶香', '椰香', '顺滑', '低苦', '清爽', '冰饮')
+        )
 
--- 瑞幸
-INSERT INTO CoffeeFlavorTag(coffee_id, tag_id, weight)
-SELECT c.coffee_id, t.tag_id,
-    CASE
-        WHEN t.tag_name IN ('椰香', '奶香') THEN 1.30
-        ELSE 1.00
-    END
-FROM Coffee c
-JOIN FlavorTag t ON t.tag_name IN ('奶香', '椰香', '顺滑', '低苦')
-WHERE c.name = '生椰拿铁' AND c.shop = '瑞幸';
+        -- 厚乳、水牛乳、丝绒类
+        OR (
+            c.name IN ('厚乳拿铁', '丝绒拿铁', '水牛乳拿铁')
+            AND t.tag_name IN ('奶香', '顺滑', '浓郁', '低苦')
+        )
 
-INSERT INTO CoffeeFlavorTag(coffee_id, tag_id, weight)
-SELECT c.coffee_id, t.tag_id,
-    CASE
-        WHEN t.tag_name IN ('奶香', '浓郁') THEN 1.30
-        ELSE 1.00
-    END
-FROM Coffee c
-JOIN FlavorTag t ON t.tag_name IN ('奶香', '顺滑', '浓郁', '低苦')
-WHERE c.name = '厚乳拿铁' AND c.shop = '瑞幸';
+        -- 焦糖类
+        OR (
+            c.name IN ('焦糖玛奇朵', '焦糖烧拿铁')
+            AND t.tag_name IN ('奶香', '顺滑', '焦糖', '低苦', '浓郁')
+        )
 
-INSERT INTO CoffeeFlavorTag(coffee_id, tag_id, weight)
-SELECT c.coffee_id, t.tag_id,
-    CASE
-        WHEN t.tag_name IN ('咖啡感', '浓郁') THEN 1.20
-        ELSE 1.00
-    END
-FROM Coffee c
-JOIN FlavorTag t ON t.tag_name IN ('咖啡感', '浓郁', '高咖啡因')
-WHERE c.name = '美式咖啡' AND c.shop = '瑞幸';
+        -- 巧克力、摩卡类
+        OR (
+            c.name IN ('摩卡', '比利时黑巧拿铁')
+            AND t.tag_name IN ('奶香', '顺滑', '巧克力', '浓郁', '低苦')
+        )
 
-INSERT INTO CoffeeFlavorTag(coffee_id, tag_id, weight)
-SELECT c.coffee_id, t.tag_id,
-    CASE
-        WHEN t.tag_name IN ('奶香', '顺滑') THEN 1.20
-        ELSE 1.00
-    END
-FROM Coffee c
-JOIN FlavorTag t ON t.tag_name IN ('奶香', '顺滑', '焦糖', '低苦')
-WHERE c.name = '丝绒拿铁' AND c.shop = '瑞幸';
+        -- 坚果类
+        OR (
+            c.name IN ('巴旦木拿铁', '烤坚果拿铁', '山核桃拿铁')
+            AND t.tag_name IN ('奶香', '顺滑', '坚果', '浓郁', '低苦')
+        )
 
-INSERT INTO CoffeeFlavorTag(coffee_id, tag_id, weight)
-SELECT c.coffee_id, t.tag_id,
-    CASE
-        WHEN t.tag_name IN ('椰香', '清爽', '冰饮') THEN 1.20
-        ELSE 1.00
-    END
-FROM Coffee c
-JOIN FlavorTag t ON t.tag_name IN ('椰香', '清爽', '冰饮', '低苦')
-WHERE c.name = '冰吸生椰' AND c.shop = '瑞幸';
+        -- 黄油、白脱类
+        OR (
+            c.name IN ('小黄油拿铁', '白脱拿铁')
+            AND t.tag_name IN ('奶香', '顺滑', '黄油', '浓郁', '低苦')
+        )
 
--- Manner
-INSERT INTO CoffeeFlavorTag(coffee_id, tag_id, weight)
-SELECT c.coffee_id, t.tag_id,
-    CASE
-        WHEN t.tag_name IN ('果香', '手冲层次') THEN 1.20
-        ELSE 1.00
-    END
-FROM Coffee c
-JOIN FlavorTag t ON t.tag_name IN ('果香', '花香', '酸甜', '手冲层次', '清爽')
-WHERE c.name = '手冲咖啡' AND c.shop = 'Manner';
+        -- 芝士类
+        OR (
+            c.name IN ('咸芝士拿铁', '芝士分子拿铁', '玫瑰芝士浮云拿铁')
+            AND t.tag_name IN ('奶香', '顺滑', '芝士', '浓郁', '低苦')
+        )
 
-INSERT INTO CoffeeFlavorTag(coffee_id, tag_id, weight)
-SELECT c.coffee_id, t.tag_id,
-    CASE
-        WHEN t.tag_name IN ('奶香', '顺滑') THEN 1.20
-        ELSE 1.00
-    END
-FROM Coffee c
-JOIN FlavorTag t ON t.tag_name IN ('奶香', '顺滑', '低苦', '咖啡感')
-WHERE c.name = '拿铁' AND c.shop = 'Manner';
+        -- 玫瑰类
+        OR (
+            c.name IN ('三重玫瑰奶砖拿铁', '玫瑰芝士浮云拿铁')
+            AND t.tag_name IN ('奶香', '顺滑', '花香', '玫瑰', '低苦')
+        )
 
-INSERT INTO CoffeeFlavorTag(coffee_id, tag_id, weight)
-SELECT c.coffee_id, t.tag_id,
-    CASE
-        WHEN t.tag_name IN ('咖啡感', '浓郁') THEN 1.20
-        ELSE 1.00
-    END
-FROM Coffee c
-JOIN FlavorTag t ON t.tag_name IN ('咖啡感', '浓郁', '高咖啡因')
-WHERE c.name = '美式' AND c.shop = 'Manner';
+        -- 紫芋、芝麻、巴斯克类
+        OR (
+            c.name = '紫芋拿铁'
+            AND t.tag_name IN ('奶香', '顺滑', '芋香', '低苦')
+        )
+        OR (
+            c.name = '黑芝麻巴斯克拿铁'
+            AND t.tag_name IN ('奶香', '顺滑', '芝麻', '坚果', '浓郁', '低苦')
+        )
 
-INSERT INTO CoffeeFlavorTag(coffee_id, tag_id, weight)
-SELECT c.coffee_id, t.tag_id,
-    CASE
-        WHEN t.tag_name IN ('谷物香', '顺滑') THEN 1.20
-        ELSE 1.00
-    END
-FROM Coffee c
-JOIN FlavorTag t ON t.tag_name IN ('奶香', '谷物香', '顺滑', '轻盈', '低苦')
-WHERE c.name = '燕麦拿铁' AND c.shop = 'Manner';
+        -- 冷萃类
+        OR (
+            c.name IN ('冷萃咖啡', '冷萃')
+            AND t.tag_name IN ('清爽', '低苦', '冰饮', '咖啡感')
+        )
+        OR (
+            c.name IN ('咸奶萃')
+            AND t.tag_name IN ('奶香', '顺滑', '清爽', '冰饮', '低苦')
+        )
+        OR (
+            c.name IN ('冷萃维也纳')
+            AND t.tag_name IN ('奶香', '顺滑', '清爽', '冰饮', '浓郁')
+        )
 
-INSERT INTO CoffeeFlavorTag(coffee_id, tag_id, weight)
-SELECT c.coffee_id, t.tag_id,
-    CASE
-        WHEN t.tag_name IN ('清爽', '冰饮') THEN 1.20
-        ELSE 1.00
-    END
-FROM Coffee c
-JOIN FlavorTag t ON t.tag_name IN ('清爽', '低苦', '冰饮', '咖啡感')
-WHERE c.name = '冷萃' AND c.shop = 'Manner';
+        -- 手冲、单品类
+        OR (
+            c.name IN ('手冲咖啡', '手冲', '单品手冲')
+            AND t.tag_name IN ('果香', '花香', '酸甜', '手冲层次', '清爽')
+        )
 
--- Grid
-INSERT INTO CoffeeFlavorTag(coffee_id, tag_id, weight)
-SELECT c.coffee_id, t.tag_id,
-    CASE
-        WHEN t.tag_name IN ('果香', '花香', '手冲层次') THEN 1.20
-        ELSE 1.00
-    END
-FROM Coffee c
-JOIN FlavorTag t ON t.tag_name IN ('果香', '花香', '酸甜', '手冲层次', '清爽')
-WHERE c.name = '单品手冲' AND c.shop = 'Grid';
-
-INSERT INTO CoffeeFlavorTag(coffee_id, tag_id, weight)
-SELECT c.coffee_id, t.tag_id,
-    CASE
-        WHEN t.tag_name IN ('咖啡感', '浓郁', '高咖啡因') THEN 1.20
-        ELSE 1.00
-    END
-FROM Coffee c
-JOIN FlavorTag t ON t.tag_name IN ('咖啡感', '浓郁', '高咖啡因')
-WHERE c.name = '意式浓缩' AND c.shop = 'Grid';
-
-INSERT INTO CoffeeFlavorTag(coffee_id, tag_id, weight)
-SELECT c.coffee_id, t.tag_id,
-    CASE
-        WHEN t.tag_name IN ('奶香', '顺滑') THEN 1.20
-        ELSE 1.00
-    END
-FROM Coffee c
-JOIN FlavorTag t ON t.tag_name IN ('奶香', '顺滑', '低苦', '咖啡感')
-WHERE c.name = '拿铁' AND c.shop = 'Grid';
-
-INSERT INTO CoffeeFlavorTag(coffee_id, tag_id, weight)
-SELECT c.coffee_id, t.tag_id,
-    CASE
-        WHEN t.tag_name IN ('清爽', '冰饮') THEN 1.20
-        ELSE 1.00
-    END
-FROM Coffee c
-JOIN FlavorTag t ON t.tag_name IN ('清爽', '低苦', '冰饮', '咖啡感')
-WHERE c.name = '冷萃' AND c.shop = 'Grid';
-
--- M Stand
-INSERT INTO CoffeeFlavorTag(coffee_id, tag_id, weight)
-SELECT c.coffee_id, t.tag_id,
-    CASE
-        WHEN t.tag_name IN ('谷物香', '顺滑') THEN 1.20
-        ELSE 1.00
-    END
-FROM Coffee c
-JOIN FlavorTag t ON t.tag_name IN ('奶香', '谷物香', '顺滑', '轻盈', '低苦')
-WHERE c.name = '燕麦拿铁' AND c.shop = 'M Stand';
-
-INSERT INTO CoffeeFlavorTag(coffee_id, tag_id, weight)
-SELECT c.coffee_id, t.tag_id,
-    CASE
-        WHEN t.tag_name IN ('咖啡感', '浓郁') THEN 1.20
-        ELSE 1.00
-    END
-FROM Coffee c
-JOIN FlavorTag t ON t.tag_name IN ('咖啡感', '浓郁', '高咖啡因')
-WHERE c.name = '美式' AND c.shop = 'M Stand';
-
-INSERT INTO CoffeeFlavorTag(coffee_id, tag_id, weight)
-SELECT c.coffee_id, t.tag_id,
-    CASE
-        WHEN t.tag_name IN ('果香', '手冲层次') THEN 1.20
-        ELSE 1.00
-    END
-FROM Coffee c
-JOIN FlavorTag t ON t.tag_name IN ('果香', '花香', '酸甜', '手冲层次', '清爽')
-WHERE c.name = '手冲' AND c.shop = 'M Stand';
-
-INSERT INTO CoffeeFlavorTag(coffee_id, tag_id, weight)
-SELECT c.coffee_id, t.tag_id,
-    CASE
-        WHEN t.tag_name IN ('奶香', '清爽', '冰饮') THEN 1.20
-        ELSE 1.00
-    END
-FROM Coffee c
-JOIN FlavorTag t ON t.tag_name IN ('奶香', '顺滑', '清爽', '冰饮', '低苦')
-WHERE c.name = '冷萃拿铁' AND c.shop = 'M Stand';
-
--- Peets
-INSERT INTO CoffeeFlavorTag(coffee_id, tag_id, weight)
-SELECT c.coffee_id, t.tag_id,
-    CASE
-        WHEN t.tag_name IN ('咖啡感', '浓郁') THEN 1.20
-        ELSE 1.00
-    END
-FROM Coffee c
-JOIN FlavorTag t ON t.tag_name IN ('咖啡感', '浓郁', '高咖啡因')
-WHERE c.name = '招牌浓缩' AND c.shop = 'Peets';
-
-INSERT INTO CoffeeFlavorTag(coffee_id, tag_id, weight)
-SELECT c.coffee_id, t.tag_id,
-    CASE
-        WHEN t.tag_name IN ('奶香', '顺滑') THEN 1.20
-        ELSE 1.00
-    END
-FROM Coffee c
-JOIN FlavorTag t ON t.tag_name IN ('奶香', '顺滑', '低苦', '咖啡感')
-WHERE c.name = '拿铁' AND c.shop = 'Peets';
-
-INSERT INTO CoffeeFlavorTag(coffee_id, tag_id, weight)
-SELECT c.coffee_id, t.tag_id,
-    CASE
-        WHEN t.tag_name IN ('深烘', '浓郁', '高咖啡因') THEN 1.30
-        ELSE 1.00
-    END
-FROM Coffee c
-JOIN FlavorTag t ON t.tag_name IN ('深烘', '浓郁', '咖啡感', '高咖啡因')
-WHERE c.name = '黑眼龙' AND c.shop = 'Peets';
-
-INSERT INTO CoffeeFlavorTag(coffee_id, tag_id, weight)
-SELECT c.coffee_id, t.tag_id,
-    CASE
-        WHEN t.tag_name IN ('清爽', '冰饮') THEN 1.20
-        ELSE 1.00
-    END
-FROM Coffee c
-JOIN FlavorTag t ON t.tag_name IN ('清爽', '低苦', '冰饮', '咖啡感')
-WHERE c.name = '冷萃' AND c.shop = 'Peets';
-
--- Tims
-INSERT INTO CoffeeFlavorTag(coffee_id, tag_id, weight)
-SELECT c.coffee_id, t.tag_id,
-    CASE
-        WHEN t.tag_name IN ('轻盈', '顺滑') THEN 1.20
-        ELSE 1.00
-    END
-FROM Coffee c
-JOIN FlavorTag t ON t.tag_name IN ('轻盈', '顺滑', '低苦', '坚果', '焦糖')
-WHERE c.name = '招牌咖啡' AND c.shop = 'Tims';
-
-INSERT INTO CoffeeFlavorTag(coffee_id, tag_id, weight)
-SELECT c.coffee_id, t.tag_id,
-    CASE
-        WHEN t.tag_name IN ('奶香', '顺滑') THEN 1.20
-        ELSE 1.00
-    END
-FROM Coffee c
-JOIN FlavorTag t ON t.tag_name IN ('奶香', '顺滑', '低苦', '咖啡感')
-WHERE c.name = '拿铁' AND c.shop = 'Tims';
-
-INSERT INTO CoffeeFlavorTag(coffee_id, tag_id, weight)
-SELECT c.coffee_id, t.tag_id,
-    CASE
-        WHEN t.tag_name IN ('咖啡感', '浓郁') THEN 1.20
-        ELSE 1.00
-    END
-FROM Coffee c
-JOIN FlavorTag t ON t.tag_name IN ('咖啡感', '浓郁', '高咖啡因')
-WHERE c.name = '美式' AND c.shop = 'Tims';
-
-INSERT INTO CoffeeFlavorTag(coffee_id, tag_id, weight)
-SELECT c.coffee_id, t.tag_id,
-    CASE
-        WHEN t.tag_name IN ('清爽', '冰饮') THEN 1.20
-        ELSE 1.00
-    END
-FROM Coffee c
-JOIN FlavorTag t ON t.tag_name IN ('清爽', '低苦', '冰饮', '咖啡感')
-WHERE c.name = '冷萃' AND c.shop = 'Tims';
+        -- 意式浓缩
+        OR (
+            c.name = '意式浓缩'
+            AND t.tag_name IN ('咖啡感', '浓郁', '高咖啡因', '深烘')
+        )
+    );
 
 -- ===================== 10. 触发器 =====================
 DELIMITER //

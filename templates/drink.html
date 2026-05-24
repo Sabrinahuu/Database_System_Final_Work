@@ -358,7 +358,7 @@
     <form method="post">
       <div class="form-group">
   <label>选择店铺</label>
-  <select id="shopSelect" onchange="filterCoffee()">
+  <select id="shopSelect" name="shop_select" onchange="filterCoffee()">
     <option value="">-- 请选择店铺 --</option>
     <option>星巴克</option>
     <option>瑞幸</option>
@@ -367,15 +367,30 @@
     <option>M Stand</option>
     <option>Peets</option>
     <option>Tims</option>
+    <option value="__custom__">＋ 自定义店铺</option>
   </select>
 </div>
 
-<div class="form-group">
+<div id="custom_shop_div" style="display:none; margin-top: 0.6rem;">
+  <input type="text" name="custom_shop_name" id="custom_shop_name" placeholder="请输入店铺名称"
+    style="width:100%; padding:0.8rem 1rem; border:1.5px solid var(--steam); border-radius:10px;
+           font-family:'DM Sans',sans-serif; font-size:0.95rem; color:var(--text);
+           background:var(--foam); outline:none;">
+</div>
+
+<div class="form-group" style="margin-top: 1.3rem;">
   <label>选择咖啡</label>
-  <select name="coffee_id" id="coffeeSelect" required onchange="showCoffeeTags()">
+  <select name="coffee_id" id="coffeeSelect" required onchange="handleCoffeeChange()">
     <option value="">-- 请先选择店铺 --</option>
   </select>
   <div id="coffeeTagsPreview" class="coffee-tags-preview"></div>
+</div>
+
+<div id="custom_coffee_div" style="display:none; margin-top: 0.6rem;">
+  <input type="text" name="custom_coffee_name" id="custom_coffee_name" placeholder="请输入咖啡名称"
+    style="width:100%; padding:0.8rem 1rem; border:1.5px solid var(--steam); border-radius:10px;
+           font-family:'DM Sans',sans-serif; font-size:0.95rem; color:var(--text);
+           background:var(--foam); outline:none;">
 </div>
 
 <div class="form-group">
@@ -416,9 +431,23 @@ const allCoffees = {
 function filterCoffee() {
   const shop = document.getElementById('shopSelect').value;
   const coffeeSelect = document.getElementById('coffeeSelect');
+  const customShopDiv = document.getElementById('custom_shop_div');
+  const customCoffeeDiv = document.getElementById('custom_coffee_div');
 
-  // 清空现有选项
+  // 显示/隐藏自定义店铺输入框
+  if (shop === '__custom__') {
+    customShopDiv.style.display = 'block';
+    coffeeSelect.innerHTML = '<option value="__custom__">＋ 自定义咖啡</option>';
+    customCoffeeDiv.style.display = 'block';
+    document.getElementById('coffeeTagsPreview').innerHTML = '';
+    return;
+  } else {
+    customShopDiv.style.display = 'none';
+  }
+
+  // 清空咖啡选项
   coffeeSelect.innerHTML = '<option value="">-- 请选择咖啡 --</option>';
+  customCoffeeDiv.style.display = 'none';
 
   if (!shop || !allCoffees[shop]) return;
 
@@ -430,17 +459,33 @@ function filterCoffee() {
     coffeeSelect.appendChild(opt);
   });
 
+  // 加上自定义咖啡选项
+  const customOpt = document.createElement('option');
+  customOpt.value = '__custom__';
+  customOpt.textContent = '＋ 自定义咖啡';
+  coffeeSelect.appendChild(customOpt);
+
   // 默认选中第一个
   if (coffeeSelect.options.length > 1) {
     coffeeSelect.selectedIndex = 1;
   }
-  showCoffeeTags();
+  handleCoffeeChange();
 }
 
-function showCoffeeTags() {
+function handleCoffeeChange() {
   const shop = document.getElementById('shopSelect').value;
   const coffeeId = document.getElementById('coffeeSelect').value;
   const box = document.getElementById('coffeeTagsPreview');
+  const customCoffeeDiv = document.getElementById('custom_coffee_div');
+
+  // 自定义咖啡
+  if (coffeeId === '__custom__') {
+    customCoffeeDiv.style.display = 'block';
+    box.innerHTML = '';
+    return;
+  }
+
+  customCoffeeDiv.style.display = 'none';
   box.innerHTML = '';
 
   if (!shop || !coffeeId || !allCoffees[shop]) return;
@@ -584,5 +629,6 @@ drinkDateInput.addEventListener('change', function () {
 
 initDrinkDate();
 </script>
+
 </body>
 </html>

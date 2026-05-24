@@ -367,31 +367,7 @@ def drink():
             shops, coffee_tags = load_shops_and_tags(cur)
 
         if request.method == 'POST':
-            shop_select = request.form.get('shop_select')
-            coffee_select = request.form.get('coffee_id', '').strip()
-            custom_shop = request.form.get('custom_shop_name', '').strip() \
-                          if shop_select == '__custom__' else shop_select
-
-            custom_coffee = request.form.get('custom_coffee_name', '').strip() \
-                            if coffee_select == '__custom__' else None
-
-            if custom_coffee:
-                with conn.cursor() as cur2:
-                    cur2.execute(
-                        "SELECT coffee_id FROM Coffee WHERE name=%s AND shop=%s",
-                        (custom_coffee, custom_shop)
-                    )
-                    row = cur2.fetchone()
-                    if row:
-                        coffee_id = row[0]
-                    else:
-                        cur2.execute(
-                            "INSERT INTO Coffee(name, shop) VALUES(%s, %s)",
-                            (custom_coffee, custom_shop)
-                        )
-                        coffee_id = cur2.lastrowid
-            else:
-                coffee_id = int(request.form['coffee_id'])
+            coffee_id = int(request.form['coffee_id'])
             quantity = int(request.form['quantity'])
             score = int(request.form['taste_score'])
             cup_size = request.form.get('cup_size', '大杯')
